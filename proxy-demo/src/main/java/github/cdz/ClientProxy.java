@@ -17,15 +17,28 @@ import java.lang.reflect.Proxy;
  **/
 public class ClientProxy implements InvocationHandler {
 
+    private Object p = new HelloServiceImpl();
+
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Class<T> clazz) {
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[]{clazz}, this);
     }
 
+    /**
+     * 为什么JDK动态代理只能代理有接口的类？
+     *
+     * 因为生成的代理对象是 继承了 Proxy类，Java没有多继承，只能实现接口
+     *
+     * @param proxy
+     * @param method
+     * @param args
+     * @return
+     * @throws Throwable
+     */
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
         System.out.println("在invoke中[" + method.getName() + "]方法被调用");
 
-        return "1";
+        return method.invoke(p,args);
     }
 }
