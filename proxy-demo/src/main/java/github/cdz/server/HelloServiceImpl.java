@@ -1,4 +1,6 @@
-package github.cdz;
+package github.cdz.server;
+
+import github.cdz.HelloService;
 
 /**
  * Created with IntelliJ IDEA.
@@ -7,8 +9,9 @@ package github.cdz;
  * Create: 2020-09-21 23:47
  **/
 public class HelloServiceImpl implements HelloService {
+    @Override
     public String hello(String s) {
-        System.out.println("原始方法.....");
+        System.out.println("server 方法.....");
         return "say:"+s;
     }
 }

@@ -1,8 +1,13 @@
-package github.cdz;
+package github.cdz.client;
 
+import github.cdz.RpcRequest;
+
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.Socket;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,8 +21,6 @@ import java.lang.reflect.Proxy;
  * 所有方法执行 invoke都会加入逻辑
  **/
 public class ClientProxy implements InvocationHandler {
-
-    private Object p = new HelloServiceImpl();
 
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Class<T> clazz) {
@@ -35,10 +38,20 @@ public class ClientProxy implements InvocationHandler {
      * @return
      * @throws Throwable
      */
+    @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
         System.out.println("在invoke中[" + method.getName() + "]方法被调用");
-
-        return method.invoke(p,args);
+        //socket 使用socket发送请求——client端
+        try (Socket socket = new Socket("localhost", 9999)){
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            RpcRequest rpcRequest = RpcRequest.builder()
+                    .interfaceName(method.getDeclaringClass().getName())
+                    .methodName(method.getName())
+                    .parameters(args)
+                    .paramTypes(method.getParameterTypes()).build();
+            objectOutputStream.writeObject(rpcRequest);
+            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+            return objectInputStream.readObject();
+        }
     }
 }

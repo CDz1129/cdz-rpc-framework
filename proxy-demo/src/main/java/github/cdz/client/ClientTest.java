@@ -1,4 +1,6 @@
-package github.cdz;
+package github.cdz.client;
+
+import github.cdz.HelloService;
 
 /**
  * Created with IntelliJ IDEA.
