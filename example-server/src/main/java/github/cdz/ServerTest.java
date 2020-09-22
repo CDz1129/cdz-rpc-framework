@@ -13,5 +13,7 @@ public class ServerTest {
         RpcServer rpcServer = new RpcServer();
         HelloService helloService = new HelloServiceImpl();
         rpcServer.register(helloService,9999);
+        System.out.println("二次注册，下面不会执行");
+        rpcServer.register(new HelloServiceImpl(),9999);
     }
 }

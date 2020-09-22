@@ -15,7 +15,7 @@ import java.net.Socket;
 /**
  * ClientMessageHandlerThread
  *
- * 处理socket类
+ * server处理socket类
  *
  * @author chendezhi
  * @date 2020/9/22 17:47
@@ -46,6 +46,7 @@ public class ClientMessageHandlerThread implements Runnable {
         }
     }
 
+    //todo 返回处理
     private RpcResponse invokeTargetMethod(RpcRequest rpcRequest) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Class<?> clazz = Class.forName(rpcRequest.getInterfaceName());
         if (!clazz.isAssignableFrom(service.getClass())){

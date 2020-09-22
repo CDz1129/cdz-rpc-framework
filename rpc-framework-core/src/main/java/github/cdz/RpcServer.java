@@ -35,6 +35,11 @@ public class RpcServer {
     }
 
 
+    /**
+     * todo 注册 使用map缓存
+     * @param service
+     * @param port
+     */
     public void register(Object service, int port) {
         log.info("server启动");
         try (ServerSocket server = new ServerSocket(port)) {
