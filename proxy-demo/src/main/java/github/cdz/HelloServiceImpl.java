@@ -8,6 +8,7 @@ package github.cdz;
  **/
 public class HelloServiceImpl implements HelloService {
     public String hello(String s) {
+        System.out.println("原始方法.....");
         return "say:"+s;
     }
 }
