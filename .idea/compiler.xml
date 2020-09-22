@@ -6,8 +6,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="proxy-demo" />
+        <module name="rpc-framework-core" />
+        <module name="rpc-framework-common" />
+        <module name="example-server" />
+        <module name="example-client" />
+        <module name="hello-service-api" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="proxy-demo" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
