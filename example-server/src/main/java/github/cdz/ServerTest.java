@@ -1,5 +1,9 @@
 package github.cdz;
 
+import github.cdz.registry.DefaultServiceRegistry;
+import github.cdz.registry.ServiceRegistry;
+import github.cdz.socket.RpcServer;
+
 /**
  * ServerTest
  *
@@ -10,10 +14,11 @@ package github.cdz;
 public class ServerTest {
 
     public static void main(String[] args) {
-        RpcServer rpcServer = new RpcServer();
+        ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
         HelloService helloService = new HelloServiceImpl();
-        rpcServer.register(helloService,9999);
-        System.out.println("二次注册，下面不会执行");
-        rpcServer.register(new HelloServiceImpl(),9999);
+        serviceRegistry.registry(helloService);
+
+        RpcServer rpcServer = new RpcServer(serviceRegistry);
+        rpcServer.start(9999);
     }
 }

@@ -1,6 +1,7 @@
-package github.cdz;
+package github.cdz.socket;
 
 
+import github.cdz.registry.ServiceRegistry;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -34,19 +35,24 @@ public class RpcServer {
         executorService = new ThreadPoolExecutor(core, max, keepAliveTime, TimeUnit.MINUTES, workQueue, threadFactory);
     }
 
+    private ServiceRegistry serviceRegistry;
+
+    public RpcServer(ServiceRegistry serviceRegistry) {
+        this.serviceRegistry = serviceRegistry;
+    }
+
 
     /**
      * todo 注册 使用map缓存
-     * @param service
      * @param port
      */
-    public void register(Object service, int port) {
+    public void start(int port) {
         log.info("server启动");
         try (ServerSocket server = new ServerSocket(port)) {
             Socket socket;
             while ((socket = server.accept()) != null) {
-                log.info("注册service：{}",service.getClass().getName());
-                executorService.execute(new ClientMessageHandlerThread(socket,service));
+                log.info("接受client请求");
+                executorService.execute(new ClientMessageHandlerThread(socket,serviceRegistry));
             }
         } catch (IOException e) {
             e.printStackTrace();

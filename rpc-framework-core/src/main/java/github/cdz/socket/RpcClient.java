@@ -1,4 +1,4 @@
-package github.cdz;
+package github.cdz.socket;
 
 import github.cdz.dto.RpcRequest;
 import github.cdz.dto.RpcResponse;
