@@ -25,7 +25,7 @@ public class DefaultServiceRegistry implements ServiceRegistry{
 
     //todo 自动扫描
     @Override
-    public synchronized <T> void registry(T service) {
+    public <T> void registry(T service) {
         //1. 判断是否注册过
         String serviceName = service.getClass().getCanonicalName();
         if (registryService.contains(serviceName)){
@@ -44,7 +44,7 @@ public class DefaultServiceRegistry implements ServiceRegistry{
     }
 
     @Override
-    public synchronized Object getService(String serviceName) {
+    public Object getService(String serviceName) {
         return serviceMap.get(serviceName);
     }
 
