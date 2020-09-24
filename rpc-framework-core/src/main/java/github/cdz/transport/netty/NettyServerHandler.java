@@ -42,7 +42,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 RpcResponse rpcResponse = requestHandle.handle(rpcRequest, service);
                 log.info("server get result: {}",rpcResponse);
                 //写回去
-                // 这里要注意 写回去的时候，不要写回去错误对象了——rpcResponse 和使用错误方法是 writeAndFlush
+                // todo 这里要注意 写回去的时候，不要写回去错误对象了——rpcResponse 和使用错误方法是 writeAndFlush
+                // ChannelFuture channelFuture = ctx.channel().write(rpcRequest); //大意了
+                //调试过程发现，基本上只需调试 handle
                 ChannelFuture channelFuture = ctx.channel().writeAndFlush(rpcResponse);
                 channelFuture.addListener(ChannelFutureListener.CLOSE);
             }
