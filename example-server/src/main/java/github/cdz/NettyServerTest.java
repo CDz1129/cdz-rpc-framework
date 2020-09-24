@@ -2,23 +2,25 @@ package github.cdz;
 
 import github.cdz.registry.DefaultServiceRegistry;
 import github.cdz.registry.ServiceRegistry;
-import github.cdz.transport.socket.SocketRpcServer;
+import github.cdz.transport.netty.NettyRpcServer;
+import github.cdz.transport.netty.NettyServerHandler;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * ServerTest
+ * NettyServerTest
  *
  * @author chendezhi
- * @date 2020/9/22 18:34
+ * @date 2020/9/24 17:07
  * @since 1.0.0
  */
-public class ServerTest {
-
+@Slf4j
+public class NettyServerTest {
     public static void main(String[] args) {
+
+        NettyRpcServer nettyRpcServer = new NettyRpcServer(9999);
         ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
         HelloService helloService = new HelloServiceImpl();
-        //手动注册
         serviceRegistry.registry(helloService);
-        SocketRpcServer rpcServer = new SocketRpcServer(serviceRegistry);
-        rpcServer.start(9999);
+        nettyRpcServer.run();
     }
 }

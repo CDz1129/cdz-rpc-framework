@@ -1,10 +1,13 @@
-package github.cdz.socket;
+package github.cdz.transport.socket;
 
+import github.cdz.RpcClient;
 import github.cdz.dto.RpcRequest;
 import github.cdz.dto.RpcResponse;
 import github.cdz.enums.RpcErrorMessageEnum;
 import github.cdz.enums.RpcResponseCode;
 import github.cdz.exception.RpcException;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -21,8 +24,13 @@ import java.net.Socket;
  * client代理 发送请求
  */
 @Slf4j
-public class RpcClient {
-    public Object sendRpcRequest(RpcRequest rpcRequest, String host, int port) {
+@AllArgsConstructor
+@NoArgsConstructor
+public class SocketRpcClient implements RpcClient {
+    private String host;
+    private int port;
+    @Override
+    public Object sendRpcRequest(RpcRequest rpcRequest) {
         try (Socket socket = new Socket(host, port)){
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectOutputStream.writeObject(rpcRequest);

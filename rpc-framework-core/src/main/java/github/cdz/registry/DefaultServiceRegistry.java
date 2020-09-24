@@ -20,8 +20,9 @@ public class DefaultServiceRegistry implements ServiceRegistry{
 
     //key:接口名称
     //value:服务
-    private final Map<String,Object> serviceMap = new ConcurrentHashMap<>();
-    private final Set<String> registryService = ConcurrentHashMap.newKeySet();
+    // 为什么加 static ？因为需要全体共享——其他地方new出来一样也有 serviceMap、registryService
+    private static final Map<String,Object> serviceMap = new ConcurrentHashMap<>();
+    private static final Set<String> registryService = ConcurrentHashMap.newKeySet();
 
     //todo 自动扫描
     @Override

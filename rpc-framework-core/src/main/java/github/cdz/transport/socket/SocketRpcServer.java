@@ -1,4 +1,4 @@
-package github.cdz.socket;
+package github.cdz.transport.socket;
 
 
 import github.cdz.registry.ServiceRegistry;
@@ -20,7 +20,7 @@ import java.util.concurrent.*;
  * 然后可以使用反射调用
  */
 @Slf4j
-public class RpcServer {
+public class SocketRpcServer {
 
     private static ExecutorService executorService;
 
@@ -37,7 +37,7 @@ public class RpcServer {
 
     private ServiceRegistry serviceRegistry;
 
-    public RpcServer(ServiceRegistry serviceRegistry) {
+    public SocketRpcServer(ServiceRegistry serviceRegistry) {
         this.serviceRegistry = serviceRegistry;
     }
 

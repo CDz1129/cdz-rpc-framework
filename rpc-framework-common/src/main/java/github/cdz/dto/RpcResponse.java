@@ -1,7 +1,10 @@
 package github.cdz.dto;
 
 import github.cdz.enums.RpcResponseCode;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -14,6 +17,9 @@ import java.io.Serializable;
  * 返回响应
  */
 @Data
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class RpcResponse<T> implements Serializable {
 
     private String msg;

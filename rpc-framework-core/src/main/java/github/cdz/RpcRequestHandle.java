@@ -1,5 +1,6 @@
-package github.cdz.socket;
+package github.cdz;
 
+import github.cdz.RequestHandle;
 import github.cdz.dto.RpcRequest;
 import github.cdz.dto.RpcResponse;
 import github.cdz.enums.RpcResponseCode;
@@ -16,8 +17,9 @@ import java.lang.reflect.Method;
  * @since 1.0.0
  */
 @Slf4j
-public class RpcRequestHandle {
+public class RpcRequestHandle implements RequestHandle {
 
+    @Override
     public RpcResponse handle(RpcRequest rpcRequest, Object service) {
         RpcResponse rpcResponse = invokeTargetMethod(rpcRequest, service);
         return rpcResponse;

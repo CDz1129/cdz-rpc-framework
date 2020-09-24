@@ -1,21 +1,20 @@
 package github.cdz;
 
-
-
-import github.cdz.transport.socket.SocketRpcClient;
+import github.cdz.transport.netty.NettyRpcClient;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Created with IntelliJ IDEA.
- * Description:
- * User: CDz
- * Create: 2020-09-21 22:22
- **/
+ * NettyClientTest
+ *
+ * @author chendezhi
+ * @date 2020/9/24 17:07
+ * @since 1.0.0
+ */
 @Slf4j
-public class ClientTest {
+public class NettyClientTest {
 
     public static void main(String[] args) {
-        RpcClient rpcClient = new SocketRpcClient("localhost", 9999);
+        RpcClient rpcClient = new NettyRpcClient("localhost", 9999);
         RpcClientProxy rpcClientProxy = new RpcClientProxy(rpcClient);
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
         Hello hello = new Hello("111", "222");

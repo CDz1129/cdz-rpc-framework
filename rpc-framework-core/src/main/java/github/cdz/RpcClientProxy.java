@@ -1,6 +1,8 @@
-package github.cdz.socket;
+package github.cdz;
 
+import github.cdz.RpcClient;
 import github.cdz.dto.RpcRequest;
+import github.cdz.transport.socket.SocketRpcClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
@@ -20,12 +22,10 @@ import java.lang.reflect.Proxy;
 public class RpcClientProxy implements InvocationHandler {
 
 
-    private String host;
-    private int port;
+    private RpcClient rpcClient;
 
-    public RpcClientProxy(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public RpcClientProxy(RpcClient rpcClient) {
+        this.rpcClient = rpcClient;
     }
 
     @SuppressWarnings("unchecked")
@@ -52,8 +52,7 @@ public class RpcClientProxy implements InvocationHandler {
                 .methodName(method.getName())
                 .parameters(args)
                 .paramTypes(method.getParameterTypes()).build();
-        RpcClient rpcClient = new RpcClient();
-        return rpcClient.sendRpcRequest(rpcRequest,host,port);
+        return rpcClient.sendRpcRequest(rpcRequest);
 
     }
 }
