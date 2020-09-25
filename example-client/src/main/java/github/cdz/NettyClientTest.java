@@ -1,6 +1,6 @@
 package github.cdz;
 
-import github.cdz.transport.netty.NettyRpcClient;
+import github.cdz.transport.netty.client.NettyRpcClient;
 import lombok.extern.slf4j.Slf4j;
 
 /**

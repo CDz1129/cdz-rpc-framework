@@ -1,4 +1,4 @@
-package github.cdz.transport.netty;
+package github.cdz.transport.netty.codec;
 
 import github.cdz.serialize.Serializer;
 import io.netty.buffer.ByteBuf;

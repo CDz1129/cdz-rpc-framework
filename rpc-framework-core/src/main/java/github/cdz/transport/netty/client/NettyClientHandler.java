@@ -1,4 +1,4 @@
-package github.cdz.transport.netty;
+package github.cdz.transport.netty.client;
 
 import github.cdz.dto.RpcResponse;
 import io.netty.channel.ChannelHandlerContext;
