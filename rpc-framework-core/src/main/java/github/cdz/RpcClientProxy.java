@@ -1,13 +1,12 @@
 package github.cdz;
 
-import github.cdz.RpcClient;
 import github.cdz.dto.RpcRequest;
-import github.cdz.transport.socket.SocketRpcClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.UUID;
 
 /**
  * RpcClientProxy
@@ -48,6 +47,7 @@ public class RpcClientProxy implements InvocationHandler {
         log.info("client:在invoke中[" + method.getName() + "]方法被调用");
         //socket 使用socket发送请求——client端
         RpcRequest rpcRequest = RpcRequest.builder()
+                .requestId(UUID.randomUUID().toString())
                 .interfaceName(method.getDeclaringClass().getName())
                 .methodName(method.getName())
                 .parameters(args)

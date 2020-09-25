@@ -6,6 +6,7 @@ import github.cdz.dto.RpcResponse;
 import github.cdz.serialize.kryo.KryoSerializer;
 import github.cdz.transport.netty.codec.NettyKryoDecode;
 import github.cdz.transport.netty.codec.NettyKryoEncode;
+import github.cdz.utils.checker.RpcMessageChecker;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -70,6 +71,7 @@ public class NettyRpcClient implements RpcClient {
                 channel.closeFuture().sync();
                 AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse");
                 RpcResponse rpcResponse = channel.attr(key).get();
+                RpcMessageChecker.check(rpcRequest,rpcResponse);
                 return rpcResponse.getData();
             }
         } catch (Exception e) {

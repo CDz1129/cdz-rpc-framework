@@ -47,6 +47,6 @@ public class RpcRequestHandle implements RequestHandle {
             log.error("invoke {} 方法异常", rpcRequest.getInterfaceName(), e);
             return RpcResponse.fail(RpcResponseCode.FAIL);
         }
-        return RpcResponse.success(ret);
+        return RpcResponse.success(ret,rpcRequest.getRequestId());
     }
 }

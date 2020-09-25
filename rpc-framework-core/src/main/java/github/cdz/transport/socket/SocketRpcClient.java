@@ -6,6 +6,7 @@ import github.cdz.dto.RpcResponse;
 import github.cdz.enums.RpcErrorMessageEnum;
 import github.cdz.enums.RpcResponseCode;
 import github.cdz.exception.RpcException;
+import github.cdz.utils.checker.RpcMessageChecker;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,24 +30,18 @@ import java.net.Socket;
 public class SocketRpcClient implements RpcClient {
     private String host;
     private int port;
+
     @Override
     public Object sendRpcRequest(RpcRequest rpcRequest) {
-        try (Socket socket = new Socket(host, port)){
+        try (Socket socket = new Socket(host, port)) {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectOutputStream.writeObject(rpcRequest);
             ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-            RpcResponse rpcResponse = (RpcResponse)objectInputStream.readObject();
-            if (rpcResponse==null){
-                log.info("rpc 调用失败:{}",rpcRequest.getInterfaceName());
-                throw new RpcException(RpcErrorMessageEnum.SERVICE_INVOCATION_FAILURE, "interfaceName:" + rpcRequest.getInterfaceName());
-            }
-            if (rpcResponse.getCode()==null||!rpcResponse.getCode().equals(RpcResponseCode.SUCCESS.getCode())){
-                log.info("rpc 调用失败:{}",rpcRequest.getInterfaceName());
-                throw new RpcException(RpcErrorMessageEnum.SERVICE_INVOCATION_FAILURE, "interfaceName:" + rpcRequest.getInterfaceName());
-            }
+            RpcResponse rpcResponse = (RpcResponse) objectInputStream.readObject();
+            RpcMessageChecker.check(rpcRequest, rpcResponse);
             return rpcResponse.getData();
         } catch (IOException | ClassNotFoundException e) {
-            throw new RpcException("服务调用失败:",e);
+            throw new RpcException("服务调用失败:", e);
         }
     }
 }

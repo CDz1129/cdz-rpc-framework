@@ -15,7 +15,8 @@ import lombok.Getter;
 public enum  RpcErrorMessageEnum {
 
     SERVICE_INVOCATION_FAILURE("服务调用失败"),
-    SERVICE_CAN_NOT_BE_NULL("注册的服务不能为空");
+    SERVICE_CAN_NOT_BE_NULL("注册的服务不能为空"),
+    REQUEST_NOT_MATCH_RESPONSE("requestid不匹配");
 
     private String message;
 }

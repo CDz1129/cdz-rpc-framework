@@ -17,6 +17,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RpcRequest implements Serializable {
+
+    private String requestId;
     private String interfaceName;
     private String methodName;
     private Object[] parameters;

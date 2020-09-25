@@ -22,13 +22,15 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class RpcResponse<T> implements Serializable {
 
+    private String requestId;
     private String msg;
     private Integer code;
     private T data;
 
-    public static <T>RpcResponse<T> success(T data){
+    public static <T>RpcResponse<T> success(T data,String requestId){
         RpcResponse<T> response = new RpcResponse<>();
         response.setCode(RpcResponseCode.SUCCESS.getCode());
+        response.setRequestId(requestId);
         if (null!=data){
             response.setData(data);
         }
