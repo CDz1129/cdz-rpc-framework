@@ -2,6 +2,7 @@ package github.cdz;
 
 
 
+import github.cdz.transport.ClientTransport;
 import github.cdz.transport.socket.SocketRpcClient;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ClientTest {
 
     public static void main(String[] args) {
-        RpcClient rpcClient = new SocketRpcClient("localhost", 9999);
+        ClientTransport rpcClient = new SocketRpcClient("localhost", 9999);
         RpcClientProxy rpcClientProxy = new RpcClientProxy(rpcClient);
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
         Hello hello = new Hello("111", "222");

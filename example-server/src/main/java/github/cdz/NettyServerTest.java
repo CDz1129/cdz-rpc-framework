@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class NettyServerTest {
     public static void main(String[] args) {
-
         NettyRpcServer nettyRpcServer = new NettyRpcServer(9999);
         ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
         HelloService helloService = new HelloServiceImpl();

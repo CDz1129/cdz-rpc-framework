@@ -1,7 +1,10 @@
 package github.cdz;
 
-import github.cdz.transport.netty.client.NettyRpcClient;
+import github.cdz.transport.ClientTransport;
+import github.cdz.transport.netty.client.NettyClientTransport;
 import lombok.extern.slf4j.Slf4j;
+
+import java.net.InetSocketAddress;
 
 /**
  * NettyClientTest
@@ -14,8 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 public class NettyClientTest {
 
     public static void main(String[] args) {
-        RpcClient rpcClient = new NettyRpcClient("localhost", 9999);
-        RpcClientProxy rpcClientProxy = new RpcClientProxy(rpcClient);
+        ClientTransport clientTransport = new NettyClientTransport(new InetSocketAddress("localhost",9999));
+        RpcClientProxy rpcClientProxy = new RpcClientProxy(clientTransport);
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
         Hello hello = new Hello("111", "222");
         String s = helloService.hello(hello);

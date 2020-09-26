@@ -1,11 +1,9 @@
 package github.cdz.transport.socket;
 
-import github.cdz.RpcClient;
 import github.cdz.dto.RpcRequest;
 import github.cdz.dto.RpcResponse;
-import github.cdz.enums.RpcErrorMessageEnum;
-import github.cdz.enums.RpcResponseCode;
 import github.cdz.exception.RpcException;
+import github.cdz.transport.ClientTransport;
 import github.cdz.utils.checker.RpcMessageChecker;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -27,19 +25,21 @@ import java.net.Socket;
 @Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
-public class SocketRpcClient implements RpcClient {
+public class SocketRpcClient implements ClientTransport {
+    //现在还没有使用中间件做 注册中心，所以只能先当作参数传入 host port
+    //todo zk注册中心
     private String host;
     private int port;
 
     @Override
-    public Object sendRpcRequest(RpcRequest rpcRequest) {
+    public RpcResponse sendRpcRequest(RpcRequest rpcRequest) {
         try (Socket socket = new Socket(host, port)) {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectOutputStream.writeObject(rpcRequest);
             ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
             RpcResponse rpcResponse = (RpcResponse) objectInputStream.readObject();
             RpcMessageChecker.check(rpcRequest, rpcResponse);
-            return rpcResponse.getData();
+            return rpcResponse;
         } catch (IOException | ClassNotFoundException e) {
             throw new RpcException("服务调用失败:", e);
         }

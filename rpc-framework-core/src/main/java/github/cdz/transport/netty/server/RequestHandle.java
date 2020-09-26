@@ -1,4 +1,4 @@
-package github.cdz;
+package github.cdz.transport.netty.server;
 
 import github.cdz.dto.RpcRequest;
 import github.cdz.dto.RpcResponse;

@@ -1,6 +1,9 @@
 package github.cdz;
 
 import github.cdz.dto.RpcRequest;
+import github.cdz.dto.RpcResponse;
+import github.cdz.transport.ClientTransport;
+import github.cdz.utils.checker.RpcMessageChecker;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
@@ -21,10 +24,10 @@ import java.util.UUID;
 public class RpcClientProxy implements InvocationHandler {
 
 
-    private RpcClient rpcClient;
+    private ClientTransport clientTransport;
 
-    public RpcClientProxy(RpcClient rpcClient) {
-        this.rpcClient = rpcClient;
+    public RpcClientProxy(ClientTransport clientTransport) {
+        this.clientTransport = clientTransport;
     }
 
     @SuppressWarnings("unchecked")
@@ -52,7 +55,9 @@ public class RpcClientProxy implements InvocationHandler {
                 .methodName(method.getName())
                 .parameters(args)
                 .paramTypes(method.getParameterTypes()).build();
-        return rpcClient.sendRpcRequest(rpcRequest);
+        RpcResponse rpcResponse = clientTransport.sendRpcRequest(rpcRequest);
+        RpcMessageChecker.check(rpcRequest,rpcResponse);
+        return rpcResponse.getData();
 
     }
 }
