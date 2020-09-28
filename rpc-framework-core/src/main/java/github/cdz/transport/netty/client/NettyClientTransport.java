@@ -2,6 +2,8 @@ package github.cdz.transport.netty.client;
 
 import github.cdz.dto.RpcRequest;
 import github.cdz.dto.RpcResponse;
+import github.cdz.registry.ServiceDiscovery;
+import github.cdz.registry.zk.ZkServiceDiscovery;
 import github.cdz.transport.ClientTransport;
 import github.cdz.utils.checker.RpcMessageChecker;
 import io.netty.channel.Channel;
@@ -22,16 +24,16 @@ public class NettyClientTransport implements ClientTransport {
 
     private static ChannelProvider channelProvider = new ChannelProvider();;
 
-    private InetSocketAddress inetSocketAddress;
+    private ServiceDiscovery serviceDiscovery;
 
-    public NettyClientTransport(InetSocketAddress inetSocketAddress) {
-        this.inetSocketAddress = inetSocketAddress;
+    public NettyClientTransport(ServiceDiscovery serviceDiscovery) {
+        this.serviceDiscovery = serviceDiscovery;
     }
 
     @Override
     public RpcResponse sendRpcRequest(RpcRequest rpcRequest) {
         try {
-            Channel channel = channelProvider.get(inetSocketAddress);
+            Channel channel = channelProvider.get(serviceDiscovery.lookupService(rpcRequest.getInterfaceName()));
             if (channel != null) {
                 channel.writeAndFlush(rpcRequest).addListener(future -> {
                     if (future.isSuccess()) {

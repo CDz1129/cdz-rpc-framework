@@ -1,6 +1,7 @@
 package github.cdz;
 
-import github.cdz.registry.DefaultServiceRegistry;
+import github.cdz.provider.ServiceProvider;
+import github.cdz.provider.ServiceProviderImpl;
 import github.cdz.registry.ServiceRegistry;
 import github.cdz.transport.socket.SocketRpcServer;
 
@@ -14,11 +15,13 @@ import github.cdz.transport.socket.SocketRpcServer;
 public class ServerTest {
 
     public static void main(String[] args) {
-        ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
+
         HelloService helloService = new HelloServiceImpl();
-        //手动注册
-        serviceRegistry.registry(helloService);
-        SocketRpcServer rpcServer = new SocketRpcServer(serviceRegistry);
+
+        ServiceProvider serviceProvider = new ServiceProviderImpl();
+        serviceProvider.pushService(helloService);
+
+        SocketRpcServer rpcServer = new SocketRpcServer(serviceProvider);
         rpcServer.start(9999);
     }
 }

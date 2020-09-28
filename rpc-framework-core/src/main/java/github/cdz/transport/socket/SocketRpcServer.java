@@ -1,6 +1,7 @@
 package github.cdz.transport.socket;
 
 
+import github.cdz.provider.ServiceProvider;
 import github.cdz.registry.ServiceRegistry;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,10 +36,10 @@ public class SocketRpcServer {
         executorService = new ThreadPoolExecutor(core, max, keepAliveTime, TimeUnit.MINUTES, workQueue, threadFactory);
     }
 
-    private ServiceRegistry serviceRegistry;
+    private ServiceProvider serviceProvider;
 
-    public SocketRpcServer(ServiceRegistry serviceRegistry) {
-        this.serviceRegistry = serviceRegistry;
+    public SocketRpcServer(ServiceProvider serviceProvider) {
+        this.serviceProvider = serviceProvider;
     }
 
 
@@ -52,7 +53,7 @@ public class SocketRpcServer {
             Socket socket;
             while ((socket = server.accept()) != null) {
                 log.info("接受client请求");
-                executorService.execute(new ClientMessageHandlerThread(socket,serviceRegistry));
+                executorService.execute(new ClientMessageHandlerThread(socket,serviceProvider));
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,6 +1,7 @@
 package github.cdz;
 
-import github.cdz.registry.DefaultServiceRegistry;
+import github.cdz.provider.ServiceProvider;
+import github.cdz.provider.ServiceProviderImpl;
 import github.cdz.registry.ServiceRegistry;
 import github.cdz.transport.netty.server.NettyRpcServer;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class NettyServerTest {
     public static void main(String[] args) {
-        NettyRpcServer nettyRpcServer = new NettyRpcServer(9999);
-        ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
+        NettyRpcServer nettyRpcServer = new NettyRpcServer();
         HelloService helloService = new HelloServiceImpl();
-        serviceRegistry.registry(helloService);
+
+        ServiceProvider serviceProvider = new ServiceProviderImpl();
+        serviceProvider.pushService(helloService);
+
         nettyRpcServer.run();
     }
 }

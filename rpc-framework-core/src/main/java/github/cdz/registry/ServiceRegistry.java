@@ -1,5 +1,7 @@
 package github.cdz.registry;
 
+import java.net.InetSocketAddress;
+
 /**
  * ServiceRegistry
  *
@@ -9,9 +11,5 @@ package github.cdz.registry;
  * 注册接口——未来可以使用zk注册
  */
 public interface ServiceRegistry {
-
-    <T> void registry(T service);
-
-    Object getService(String serviceName);
-
+    void registryService(String serviceName, InetSocketAddress inetSocketAddress);
 }

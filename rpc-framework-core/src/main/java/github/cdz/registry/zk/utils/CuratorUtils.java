@@ -6,7 +6,10 @@ import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.imps.CuratorFrameworkState;
-import org.apache.curator.framework.recipes.cache.*;
+import org.apache.curator.framework.recipes.cache.CuratorCache;
+import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
@@ -68,22 +71,12 @@ public class CuratorUtils {
     }
 
     private static void registerWatcher(String rpcServiceName, CuratorFramework zkClient) {
-
-        //todo 新注册方式
-//        String servicePath = ZK_REGISTER_ROOT_PATH + "/" + rpcServiceName;
-//
-//        CuratorCache curatorCache = CuratorCache.builder(zkClient, servicePath).build();
-//
-//
-//        CuratorCacheListener.builder().forChanges((oldData,newData)->{
-//        });
-
-
         String servicePath = ZK_REGISTER_ROOT_PATH + "/" + rpcServiceName;
         PathChildrenCache pathChildrenCache = new PathChildrenCache(zkClient, servicePath, true);
         PathChildrenCacheListener pathChildrenCacheListener = (curatorFramework, pathChildrenCacheEvent) -> {
             List<String> serviceAddresses = curatorFramework.getChildren().forPath(servicePath);
             SERVICE_ADDRESS_MAP.put(rpcServiceName, serviceAddresses);
+            System.out.println("serviceAddresses："+serviceAddresses.toString());
         };
         pathChildrenCache.getListenable().addListener(pathChildrenCacheListener);
         try {
@@ -93,6 +86,19 @@ public class CuratorUtils {
         }
     }
 
+    /**
+     * Empty the registry of data
+     */
+    public static void clearRegistry(CuratorFramework zkClient) {
+        REGISTERED_PATH_SET.stream().parallel().forEach(p -> {
+            try {
+                zkClient.delete().forPath(p);
+            } catch (Exception e) {
+                throw new RpcException(e.getMessage(), e.getCause());
+            }
+        });
+        log.info("All registered services on the server are cleared:[{}]", REGISTERED_PATH_SET.toString());
+    }
 
     public static CuratorFramework getZkClient() {
         //todo properties读取 ip port配置
@@ -110,40 +116,34 @@ public class CuratorUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        RetryPolicy retryPolicy = new ExponentialBackoffRetry(BASE_SLEEP_TIME, MAX_RETRIES);
-
-        CuratorFramework zkClient = CuratorFrameworkFactory.newClient(defaultZookeeperAddress,retryPolicy);
-        zkClient.start();
-        String servicePath = ZK_REGISTER_ROOT_PATH+"/"+"github.cdz.registry.zk.ZkServiceRegistry" + "/127.0.0.1:9999";
-        String service = ZK_REGISTER_ROOT_PATH+"/"+"github.cdz.registry.zk.ZkServiceRegistry";
-        CuratorUtils.createPersistentNode(zkClient,servicePath);
+        CuratorFramework zkClient = getZkClient();
+        String service = ZK_REGISTER_ROOT_PATH+"/"+"test";
         CuratorCache curatorCache = CuratorCache.builder(zkClient, service).build();
-
-
-        CuratorCacheListener listener = CuratorCacheListener.builder().forChanges((oldData, newData) -> {
-            System.out.println("olddata：" + oldData);
-            System.out.println("newdata：" + newData);
-        }).build();
-
+        CuratorCacheListener listener = CuratorCacheListener.builder().forCreates(System.out::println).build();
 
         curatorCache.listenable().addListener(listener);
         curatorCache.start();
 
-        zkClient.setData().forPath(service,"test1111".getBytes());
+        CuratorUtils.createPersistentNode(zkClient,service+"/127.0.0.1:9999");
+        CuratorUtils.createPersistentNode(zkClient,service+"/127.0.0.1:9998");
         try {
             TimeUnit.MILLISECONDS.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+//        String service = ZK_REGISTER_ROOT_PATH+"/test";
 //        CuratorFramework zkClient = getZkClient();
-//        String path = ZK_REGISTER_ROOT_PATH + "/"+"test"+"/localhost:8080";
-//        String service = "test";
-//        createPersistentNode(zkClient,path);
-//        System.out.println(getChildrenNodes(zkClient, service));
-//        createPersistentNode(zkClient,ZK_REGISTER_ROOT_PATH + "/"+"test"+"/localhost:8081");
-//        createPersistentNode(zkClient,ZK_REGISTER_ROOT_PATH + "/"+"test"+"/localhost:8082");
-//        System.out.println(getChildrenNodes(zkClient, service));
+//
+//        createPersistentNode(zkClient,service+"/localhost:8081");
+//        getChildrenNodes(zkClient,"test");
+//        createPersistentNode(zkClient,service+"/localhost:8082");
+//        createPersistentNode(zkClient,service+"/localhost:8083");
+//
+//        try {
+//            TimeUnit.SECONDS.sleep(10);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 
 }

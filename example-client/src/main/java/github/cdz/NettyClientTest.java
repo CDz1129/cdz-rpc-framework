@@ -1,5 +1,7 @@
 package github.cdz;
 
+import github.cdz.registry.ServiceDiscovery;
+import github.cdz.registry.zk.ZkServiceDiscovery;
 import github.cdz.transport.ClientTransport;
 import github.cdz.transport.netty.client.NettyClientTransport;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +19,8 @@ import java.net.InetSocketAddress;
 public class NettyClientTest {
 
     public static void main(String[] args) {
-        ClientTransport clientTransport = new NettyClientTransport(new InetSocketAddress("localhost",9999));
+        ServiceDiscovery zkServiceDiscovery = new ZkServiceDiscovery();
+        ClientTransport clientTransport = new NettyClientTransport(zkServiceDiscovery);
         RpcClientProxy rpcClientProxy = new RpcClientProxy(clientTransport);
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
         Hello hello = new Hello("111", "222");

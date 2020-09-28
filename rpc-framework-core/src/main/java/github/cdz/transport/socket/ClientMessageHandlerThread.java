@@ -1,5 +1,6 @@
 package github.cdz.transport.socket;
 
+import github.cdz.provider.ServiceProvider;
 import github.cdz.transport.netty.server.RpcRequestHandle;
 import github.cdz.dto.RpcRequest;
 import github.cdz.dto.RpcResponse;
@@ -26,11 +27,11 @@ public class ClientMessageHandlerThread implements Runnable {
 
 
     private Socket socket;
-    private ServiceRegistry serviceRegistry;
+    private ServiceProvider serviceProvider;
 
-    public ClientMessageHandlerThread(Socket socket, ServiceRegistry serviceRegistry) {
+    public ClientMessageHandlerThread(Socket socket, ServiceProvider serviceProvider) {
         this.socket = socket;
-        this.serviceRegistry = serviceRegistry;
+        this.serviceProvider = serviceProvider;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class ClientMessageHandlerThread implements Runnable {
         try (ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
              ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream())) {
             RpcRequest rpcRequest = (RpcRequest) inputStream.readObject();
-            Object service = serviceRegistry.getService(rpcRequest.getInterfaceName());
+            Object service = serviceProvider.getService(rpcRequest.getInterfaceName());
             RpcRequestHandle rpcRequestHandle = new RpcRequestHandle();
             RpcResponse rpcResponse = rpcRequestHandle.handle(rpcRequest,service);
             outputStream.writeObject(rpcResponse);

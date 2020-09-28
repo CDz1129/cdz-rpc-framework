@@ -2,6 +2,8 @@ package github.cdz.transport.netty.server;
 
 import github.cdz.dto.RpcRequest;
 import github.cdz.dto.RpcResponse;
+import github.cdz.provider.ServiceProvider;
+import github.cdz.provider.ServiceProviderImpl;
 import github.cdz.serialize.kryo.KryoSerializer;
 import github.cdz.transport.netty.codec.NettyKryoDecode;
 import github.cdz.transport.netty.codec.NettyKryoEncode;
@@ -26,14 +28,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class NettyRpcServer {
 
-    private int port;
+    public static int PORT = 9999;
     private KryoSerializer kryoSerializer;
 
-    public NettyRpcServer(int port) {
-        this.port = port;
+    public NettyRpcServer() {
         kryoSerializer = new KryoSerializer();
     }
-
 
     public void run() {
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -57,7 +57,7 @@ public class NettyRpcServer {
                     .option(ChannelOption.SO_KEEPALIVE,true);
 
             //绑定端口
-            ChannelFuture f = b.bind(port).sync();
+            ChannelFuture f = b.bind(PORT).sync();
             //等待服务器监听端口关闭
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {

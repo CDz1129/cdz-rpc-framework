@@ -2,7 +2,8 @@ package github.cdz.transport.netty.server;
 
 import github.cdz.dto.RpcRequest;
 import github.cdz.dto.RpcResponse;
-import github.cdz.registry.DefaultServiceRegistry;
+import github.cdz.provider.ServiceProvider;
+import github.cdz.provider.ServiceProviderImpl;
 import github.cdz.registry.ServiceRegistry;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -23,10 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
-    private static ServiceRegistry serviceRegistry;
+    private static ServiceProvider serviceProvider;
     private static RequestHandle requestHandle;
     {
-        serviceRegistry = new DefaultServiceRegistry();
+        serviceProvider = new ServiceProviderImpl();
         requestHandle = new RpcRequestHandle();
     }
     @Override
@@ -36,7 +37,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 RpcRequest rpcRequest = (RpcRequest) msg;
                 log.info("server receive msg: {}",msg);
                 String interfaceName = rpcRequest.getInterfaceName();
-                Object service = serviceRegistry.getService(interfaceName);
+                Object service = serviceProvider.getService(interfaceName);
                 RpcResponse rpcResponse = requestHandle.handle(rpcRequest, service);
                 log.info("server get result: {}",rpcResponse);
                 //写回去
