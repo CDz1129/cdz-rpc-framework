@@ -16,6 +16,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class NettyClientHandler extends ChannelInboundHandlerAdapter {
+
+    private final UnprocessedRequests unprocessedRequests;
+
+    public NettyClientHandler(){
+        this.unprocessedRequests = new UnprocessedRequests();
+    }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
@@ -23,8 +30,9 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
                 RpcResponse rpcResponse = (RpcResponse) msg;
                 log.info("client receive msg:{}",msg);
                 //将结果存入
-                AttributeKey<RpcResponse> attributeKey = AttributeKey.valueOf("rpcResponse");
-                ctx.channel().attr(attributeKey).set(rpcResponse);
+//                AttributeKey<RpcResponse> attributeKey = AttributeKey.valueOf("rpcResponse");
+//                ctx.channel().attr(attributeKey).set(rpcResponse);
+                unprocessedRequests.complete(rpcResponse);
                 ctx.channel().close();
             }
         }finally {

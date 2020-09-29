@@ -20,5 +20,5 @@ public interface ClientTransport {
      * @param rpcRequest rpc request body
      * @return 服务器返回data
      */
-    RpcResponse sendRpcRequest(RpcRequest rpcRequest);
+    Object sendRpcRequest(RpcRequest rpcRequest);
 }
