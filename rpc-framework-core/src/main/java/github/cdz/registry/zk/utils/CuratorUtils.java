@@ -6,10 +6,7 @@ import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.imps.CuratorFrameworkState;
-import org.apache.curator.framework.recipes.cache.CuratorCache;
-import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
-import org.apache.curator.framework.recipes.cache.PathChildrenCache;
-import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
+import org.apache.curator.framework.recipes.cache.*;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
@@ -119,15 +116,20 @@ public class CuratorUtils {
         CuratorFramework zkClient = getZkClient();
         String service = ZK_REGISTER_ROOT_PATH+"/"+"test";
         CuratorCache curatorCache = CuratorCache.builder(zkClient, service).build();
-        CuratorCacheListener listener = CuratorCacheListener.builder().forCreates(System.out::println).build();
+        CuratorCacheListener listener = CuratorCacheListener.builder().forAll((type,oldData,data)->{
+//            List<String> strings = client.getChildren().forPath(service);
+//            List<String> strings = zkClient.getChildren().forPath(service);
+            System.out.println("type:"+type+",oldData:"+oldData+",data:"+data);
+        }).build();
+
 
         curatorCache.listenable().addListener(listener);
         curatorCache.start();
 
-        CuratorUtils.createPersistentNode(zkClient,service+"/127.0.0.1:9999");
-        CuratorUtils.createPersistentNode(zkClient,service+"/127.0.0.1:9998");
+        CuratorUtils.createPersistentNode(zkClient,service+"/127.0.0.1:9992");
+        CuratorUtils.createPersistentNode(zkClient,service+"/127.0.0.1:9993");
         try {
-            TimeUnit.MILLISECONDS.sleep(10);
+            TimeUnit.MINUTES.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
