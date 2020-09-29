@@ -70,6 +70,5 @@ public class RpcClientProxy implements InvocationHandler {
         }
         RpcMessageChecker.check(rpcRequest,rpcResponse);
         return rpcResponse.getData();
-
     }
 }
