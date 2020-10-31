@@ -2,15 +2,13 @@ package github.cdz.transport.netty.client;
 
 import github.cdz.dto.RpcRequest;
 import github.cdz.dto.RpcResponse;
+import github.cdz.extension.ExtensionLoader;
 import github.cdz.registry.ServiceDiscovery;
-import github.cdz.registry.zk.ZkServiceDiscovery;
+import github.cdz.registry.ServiceRegistry;
 import github.cdz.transport.ClientTransport;
-import github.cdz.utils.checker.RpcMessageChecker;
 import io.netty.channel.Channel;
-import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -23,14 +21,18 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class NettyClientTransport implements ClientTransport {
 
-    private static ChannelProvider channelProvider = new ChannelProvider();;
+    private static ChannelProvider channelProvider = new ChannelProvider();
+    ;
 
-    private ServiceDiscovery serviceDiscovery;
+    private static final ServiceDiscovery serviceDiscovery;
 
     private UnprocessedRequests unprocessedRequests;
 
-    public NettyClientTransport(ServiceDiscovery serviceDiscovery) {
-        this.serviceDiscovery = serviceDiscovery;
+    static {
+        serviceDiscovery = ExtensionLoader.getExtensionLoader(ServiceDiscovery.class).getExtension("zk");
+    }
+
+    public NettyClientTransport() {
         this.unprocessedRequests = new UnprocessedRequests();
     }
 
@@ -41,7 +43,7 @@ public class NettyClientTransport implements ClientTransport {
         try {
             Channel channel = channelProvider.get(serviceDiscovery.lookupService(rpcRequest.getInterfaceName()));
             if (channel != null) {
-                unprocessedRequests.put(rpcRequest.getRequestId(),resultFuture);
+                unprocessedRequests.put(rpcRequest.getRequestId(), resultFuture);
                 channel.writeAndFlush(rpcRequest).addListener(future -> {
                     if (future.isSuccess()) {
                         log.info("client send msg:{}", rpcRequest);

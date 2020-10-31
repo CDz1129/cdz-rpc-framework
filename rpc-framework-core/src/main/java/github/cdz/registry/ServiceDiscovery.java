@@ -1,5 +1,7 @@
 package github.cdz.registry;
 
+import github.cdz.extension.SPI;
+
 import java.net.InetSocketAddress;
 
 /**
@@ -11,6 +13,7 @@ import java.net.InetSocketAddress;
  *
  * 服务发现接口
  */
+@SPI
 public interface ServiceDiscovery {
     InetSocketAddress lookupService(String serviceName);
 }

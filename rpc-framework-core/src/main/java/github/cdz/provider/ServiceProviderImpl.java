@@ -2,8 +2,8 @@ package github.cdz.provider;
 
 import github.cdz.enums.RpcErrorMessageEnum;
 import github.cdz.exception.RpcException;
+import github.cdz.extension.ExtensionLoader;
 import github.cdz.registry.ServiceRegistry;
-import github.cdz.registry.zk.ZkServiceRegistry;
 import github.cdz.transport.netty.server.NettyRpcServer;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,7 +37,7 @@ public class ServiceProviderImpl implements ServiceProvider {
     static {
         serviceMap = new ConcurrentHashMap<>();
         registeredService = ConcurrentHashMap.newKeySet();
-        serviceRegistry = new ZkServiceRegistry();
+        serviceRegistry = ExtensionLoader.getExtensionLoader(ServiceRegistry.class).getExtension("zk");
     }
 
     @Override
